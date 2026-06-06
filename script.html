@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MENTOS GOLD | ALGORITHM</title>
+    <link rel="stylesheet" href="script.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800;900&family=Rajdhani:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="matrix-bg"></div>
+
+    <header class="app-header">
+        <a href="login.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i></a>
+        <div class="logo-wrapper">
+            <span class="emoji-logo" style="font-size: 1.5rem;">💰</span>
+            <span>SOVOR <strong>GOLD</strong></span>
+        </div>
+        <div class="signal-box">
+            <i class="fa-solid fa-wifi signal-icon"></i>
+            <span class="ping">8ms</span>
+        </div>
+    </header>
+
+    <main class="game-container">
+        <div class="info-panel">
+            <div class="info-item">
+                <span class="label">النمط القادم</span>
+                <span class="value" id="pattern-id"></span>
+            </div>
+            <div class="info-item">
+                <span class="label">نسبة الدقة</span>
+                <span class="value success">100%</span>
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <div id="mines-grid" class="mines-grid"></div>
+        </div>
+
+        <div class="control-panel">
+            <div class="progress-container">
+                <div class="progress-bar" id="scan-progress"></div>
+            </div>
+            <button id="btn-hack" class="btn-hack">
+                <i class="fa-solid fa-radar-target radar-spin"></i>
+                <span id="btn-text">START</span>
+            </button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

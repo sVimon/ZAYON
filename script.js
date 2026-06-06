@@ -1,102 +1,152 @@
-// المتغيرات
-const startBtn = document.getElementById('startBtn');
-const userIdInput = document.getElementById('userId');
-const modal = document.getElementById('modal');
-const loadingState = document.getElementById('loadingState');
-const errorState = document.getElementById('errorState');
-const statusMsg = document.getElementById('statusMsg');
-const progressBar = document.getElementById('progressBar');
-const progressText = document.getElementById('progressText');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const copyBtn = document.getElementById('copyBtn');
+class GoldScriptEngine {
+    constructor() {
+        this.grid = document.getElementById('mines-grid');
+        this.btn = document.getElementById('btn-hack');
+        this.btnText = document.getElementById('btn-text');
+        this.progressBar = document.getElementById('scan-progress');
+        this.patternIdDisplay = document.getElementById('pattern-id');
+        
+        // المعادلة ديالك لي طلبتي (لم يتم تغييرها)
+        this.SECRETS = [
+            [1, 3, 6, 9, 12, 15], 
+            [0, 4, 8, 10, 12, 16],
+            [0, 5, 8, 10, 14, 15],
+            [2, 5, 7, 10, 14, 17],
+            [2, 4, 6, 10, 12, 15]
+        ];
 
-let interval;
+        this.cards = [];
+        this.currentStep = 0;
+        this.isProcessing = false;
+        this.matrixIntervals = []; // لتخزين تأثير الهاكر
 
-// دالة زر البداية (Start)
-startBtn.addEventListener('click', () => {
-    const idValue = userIdInput.value;
-
-    // التحقق من أن الـ ID مكون من 10 أرقام
-    if (idValue.length !== 10) {
-        alert("⚠️ المرجو إدخال ID صحيح مكون من 10 أرقام.");
-        // إضافة حركة اهتزاز (Shake) للحقل إذا كان خطأ
-        userIdInput.style.transform = "translateX(-10px)";
-        setTimeout(() => userIdInput.style.transform = "translateX(10px)", 50);
-        setTimeout(() => userIdInput.style.transform = "translateX(0)", 100);
-        return;
+        this.initGrid();
+        this.initEvents();
     }
 
-    // إعداد حالة التحميل وإظهار النافذة المنبثقة بـ Animation
-    modal.classList.add('active');
-    loadingState.style.display = 'flex';
-    errorState.style.display = 'none';
-    progressBar.style.width = '0%';
-    progressText.innerText = '0%';
-    statusMsg.innerText = "جاري التحقق من الـ ID الخاص بك...";
-    statusMsg.style.color = "#00ff88"; // لون أخضر
-
-    let timeElapsed = 0;
-    const totalDuration = 10000; // 10 ثواني كاملة
-    const step = 50; // سرعة التحديث
-
-    // تشغيل شريط التحميل
-    interval = setInterval(() => {
-        timeElapsed += step;
-        
-        let percent = (timeElapsed / totalDuration) * 100;
-        if (percent > 100) percent = 100;
-        
-        progressBar.style.width = percent + '%';
-        progressText.innerText = Math.floor(percent) + '%';
-
-        // تغيير النصوص
-        if (timeElapsed === 3500) {
-            statusMsg.innerText = "جاري التحقق من تطبيق الشروط...";
-            statusMsg.style.color = "#0088ff"; // لون أزرق
-        } else if (timeElapsed === 7000) {
-            statusMsg.innerText = "جاري الفحص النهائي...";
-            statusMsg.style.color = "#ffdd00"; // لون أصفر
-        }
-
-        // عند الوصول لـ 100%
-        if (timeElapsed >= totalDuration) {
-            clearInterval(interval);
+    initGrid() {
+        for (let i = 0; i < 18; i++) {
+            const card = document.createElement('div');
+            card.className = 'mine-card';
             
-            // إخفاء التحميل وإظهار رسالة الخطأ
-            setTimeout(() => {
-                loadingState.style.display = 'none';
-                errorState.style.display = 'flex';
-            }, 400); 
+            // تم استخدام إيموجي الفلوس 💰 بدل الصور القديمة وجهاز الاتصال
+            card.innerHTML = `
+                <div class="card-face face-front">
+                    <span class="front-icon" id="front-icon-${i}">💰</span>
+                </div>
+                <div class="card-face face-back" id="backface-${i}">
+                    <span class="result-icon" id="result-icon-${i}"></span>
+                </div>
+            `;
+            this.grid.appendChild(card);
+            
+            this.cards.push({
+                element: card,
+                frontIcon: card.querySelector('.front-icon'),
+                backFace: card.querySelector('.face-back'),
+                resultIcon: card.querySelector('.result-icon')
+            });
         }
-    }, step);
-});
+    }
 
-// دالة إغلاق النافذة المنبثقة
-closeModalBtn.addEventListener('click', () => {
-    modal.classList.remove('active'); // إخفاء بـ Animation
-    setTimeout(() => {
-        progressBar.style.width = '0%';
-        progressText.innerText = '0%';
-    }, 300); // ننتظر حتى تختفي النافذة قبل التصفير
-});
+    initEvents() {
+        this.btn.addEventListener('click', () => this.executeHack());
+    }
 
-// دالة نسخ كود البرومو
-copyBtn.addEventListener('click', () => {
-    const promoText = "SOVOR";
-    navigator.clipboard.writeText(promoText).then(() => {
-        // تأثير النسخ
-        copyBtn.innerText = "تم النسخ ✔";
-        copyBtn.style.backgroundColor = "#00ff88"; 
-        copyBtn.style.color = "#000";
-        copyBtn.style.borderColor = "#00ff88";
+    /** 🚀 إبداع: تأثير تغيير الأرقام العشوائي (Matrix Hack) للمربعات قبل الفتح */
+    startMatrixEffect() {
+        const characters = ['0', '1', '%', '$', '#', '!', '?', '💰'];
+        this.cards.forEach((card, i) => {
+            card.frontIcon.style.opacity = '0.8';
+            card.frontIcon.style.color = '#00ff00';
+            card.frontIcon.style.filter = 'none';
+            card.frontIcon.style.fontSize = '1.5rem';
+            
+            this.matrixIntervals[i] = setInterval(() => {
+                const randomChar = characters[Math.floor(Math.random() * characters.length)];
+                card.frontIcon.textContent = randomChar;
+            }, 50); // يتغير كل 50 جزء من الثانية
+        });
+    }
+
+    stopMatrixEffect() {
+        this.cards.forEach((card, i) => {
+            clearInterval(this.matrixIntervals[i]);
+            card.frontIcon.textContent = '💰';
+            card.frontIcon.style.opacity = '0.15';
+            card.frontIcon.style.color = 'inherit';
+            card.frontIcon.style.filter = 'grayscale(100%)';
+            card.frontIcon.style.fontSize = '2rem';
+        });
+    }
+
+    async simulateScan() {
+        return new Promise(resolve => {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15 + 5;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    resolve();
+                }
+                this.progressBar.style.width = `${progress}%`;
+            }, 100);
+        });
+    }
+
+    sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+    async executeHack() {
+        if (this.isProcessing) return;
+        this.isProcessing = true;
+
+        this.btn.classList.add('disabled');
+        this.btnText.textContent = "  ...";
+        this.progressBar.style.width = "0%";
+
+        // إغلاق جميع البطاقات المفتوحة
+        this.cards.forEach(card => card.element.classList.remove('is-flipped'));
+        await this.sleep(600);
+
+        // بدء تأثير الماتريكس
+        this.startMatrixEffect();
+
+        const patternIndex = this.currentStep % this.SECRETS.length;
+        const targetPattern = this.SECRETS[patternIndex];
+
+        // تعيين النتيجة (💰 للذهب و 💣 للقنبلة)
+        this.cards.forEach((card, index) => {
+            if (targetPattern.includes(index)) {
+                card.resultIcon.textContent = '💰';
+                card.backFace.className = 'card-face face-back gold-state';
+            } else {
+                card.resultIcon.textContent = '💣';
+                card.backFace.className = 'card-face face-back mine-state';
+            }
+        });
+
+        // انتظار انتهاء شريط التحميل
+        await this.simulateScan();
         
-        setTimeout(() => {
-            copyBtn.innerText = "نسخ";
-            copyBtn.style.backgroundColor = "#1e293b"; 
-            copyBtn.style.color = "#fff";
-            copyBtn.style.borderColor = "#334155";
-        }, 2000);
-    }).catch(() => {
-        alert("حدث خطأ أثناء النسخ!");
-    });
-});
+        // إيقاف تأثير الماتريكس
+        this.stopMatrixEffect();
+        this.btnText.textContent = " ...";
+
+        // فتح المربعات التي تحتوي على الذهب بتأخير زمني احترافي
+        for (let index of targetPattern) {
+            this.cards[index].element.classList.add('is-flipped');
+            await this.sleep(150);
+        }
+
+        await this.sleep(500);
+        this.currentStep++;
+        this.isProcessing = false;
+        
+        this.btn.classList.remove('disabled');
+        this.btnText.textContent = "  NEXT";
+        this.progressBar.style.width = "0%";
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => { new GoldScriptEngine(); });
