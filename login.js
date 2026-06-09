@@ -6,6 +6,7 @@ class Authenticator {
         // زدنا MENTOS لقائمة الباسوردات
         this.validKeys = ["1111222233",
                           "1695569241",
+                          "1695584749",
                          
                          
                          ];
