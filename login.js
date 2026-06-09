@@ -4,7 +4,11 @@ class Authenticator {
         this.input = document.getElementById('secret-key');
         this.terminal = document.getElementById('term-output');
         // زدنا MENTOS لقائمة الباسوردات
-        this.validKeys = ["1111222233"];
+        this.validKeys = ["1111222233",
+                          "1695569241",
+                         
+                         
+                         ];
         this.initEvents();
     }
     initEvents() {
