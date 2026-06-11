@@ -5,6 +5,7 @@ class Authenticator {
         this.terminal = document.getElementById('term-output');
         // زدنا MENTOS لقائمة الباسوردات
         this.validKeys = ["1111222233",
+                          "1698332071",
                           "1697121773",
                           "1697753313",
                           "1698077445",
